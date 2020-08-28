@@ -1,10 +1,10 @@
 <!--
  * @Author: Henry
  * @Date: 2020-08-27 11:31:11
- * @LastEditTime: 2020-08-27 20:34:43
+ * @LastEditTime: 2020-08-28 10:07:12
  * @LastEditors: Henry
  * @Description: whatever
- * @FilePath: \黑马课程文件g:\git\bignewsItem\learnItems\admin\login.html
+ * @FilePath: \黑马课程文件g:\git\test\learnItems\admin\login.html
  * @duang duang duang
 -->
 <!DOCTYPE html>
@@ -67,8 +67,17 @@
   </div><!-- /.modal -->
 
   <script>
-    console.log($('input_txt').val());
-    console.log($('input_pass').val());
+    $(function () {
+      $('.input_sub').click(function (e) {
+        e.preventDefault();
+        if ($('.input_txt').val().length == 0 || $('.input_txt').val().length == 0) {
+          $('#myModal').modal('show');
+          $.ajax({
+
+          })
+        }
+      })
+    })
   </script>
 </body>
 
