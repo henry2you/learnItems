@@ -1,3 +1,12 @@
+<!--
+ * @Author: Henry
+ * @Date: 2020-08-27 21:05:24
+ * @LastEditTime: 2020-08-28 21:38:28
+ * @LastEditors: Henry
+ * @Description: whatever
+ * @FilePath: \黑马课程文件g:\git\test\learnItems\admin\user.html
+ * @duang duang duang
+-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,6 +20,7 @@
     <link rel="stylesheet" href="css/iconfont.css">
     <link rel="stylesheet" href="css/main.css">
     <script src="./libs/jquery-1.12.4.min.js"></script>
+    <script src="./libs/template-web.js"></script>
 
 </head>
 
@@ -69,8 +79,34 @@
         </div>
     </div>
 </body>
+<script>
+    $(function () {
+        //获取用户信息
+        $.ajax({
+            url: 'http://localhost:8080/api/v1/admin/user/detail',
+            type: 'get',
+            dataType: 'json',
+            success: function (dataBack) {
+                console.log(dataBack);
+                // $('.username').val(dataBack.data.username);
+                // $('.nickname').val(dataBack.data.nickname);
+                // $('.email').val(dataBack.data.email);
+                // $('.password').val(dataBack.data.passward);
+                $('.user_pic').attr('src', dataBack.data.userPic);
+                for (const key in dataBack.data) {
+                    $('.' + key).val(dataBack.data[key]);
+                }
+            }
+        })
+        //图片预览功能
+        $('#exampleInputFile').change(function () {
+            $('.user_pic').attr('src', URL.createObjectURL($(this)[0].files[0]));
+        });
+        //提交点击事件
+        $('.btn-edit').click(function () {
 
-<script src="./libs/http.js"></script>
-<script src="./js/user.js"></script>
+        })
+    })
+</script>
 
 </html>
