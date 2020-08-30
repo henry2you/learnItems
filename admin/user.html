@@ -1,7 +1,7 @@
 <!--
  * @Author: Henry
  * @Date: 2020-08-27 21:05:24
- * @LastEditTime: 2020-08-28 21:38:28
+ * @LastEditTime: 2020-08-30 10:45:48
  * @LastEditors: Henry
  * @Description: whatever
  * @FilePath: \黑马课程文件g:\git\test\learnItems\admin\user.html
@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="css/main.css">
     <script src="./libs/jquery-1.12.4.min.js"></script>
     <script src="./libs/template-web.js"></script>
+    <script src="./libs/bootstrap/js/bootstrap.min.js"></script>
 
 </head>
 
@@ -54,7 +55,7 @@
                     <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
                     <div class="col-sm-10">
                         <img src="images/2.jpg" alt="" class="user_pic">
-                        <input style="display: block" name="userPic" type="file" id="exampleInputFile">
+                        <input style="display: none" name="userPic" type="file" id="exampleInputFile">
                         <!-- 给label标签的for属性赋值,值是input标签的id,那这样的话点击label就相当于点击了input -->
                         <br>
                         <label for="exampleInputFile">
@@ -78,6 +79,25 @@
             </form>
         </div>
     </div>
+    <!-- 模态框 -->
+    <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">友情提示</h4>
+                </div>
+                <div class="modal-body">
+                    <p></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">确认</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
 </body>
 <script>
     $(function () {
@@ -103,8 +123,24 @@
             $('.user_pic').attr('src', URL.createObjectURL($(this)[0].files[0]));
         });
         //提交点击事件
-        $('.btn-edit').click(function () {
-
+        $('.btn-edit').click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: 'http://localhost:8080/api/v1/admin/user/edit',
+                type: 'post',
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                data: new FormData($('form')[0]),
+                success: function (dataBack) {
+                    console.log(dataBack);
+                    $('.modal-body>p').text(dataBack.msg);
+                    $('#myModal').modal('show');
+                    $('#myModal').on('hide.bs.modal', function () {
+                        window.parent.location.reload();
+                    })
+                }
+            })
         })
     })
 </script>
