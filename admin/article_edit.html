@@ -1,7 +1,7 @@
 <!--
  * @Author: Henry
  * @Date: 2020-08-27 21:05:24
- * @LastEditTime: 2020-08-30 16:19:53
+ * @LastEditTime: 2020-09-01 16:56:43
  * @LastEditors: Henry
  * @Description: whatever
  * @FilePath: \黑马课程文件g:\git\test\learnItems\admin\article_edit.html
@@ -19,10 +19,18 @@
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/iconfont.css">
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="./libs/jedate/css/jedate.css">
+    <link rel="stylesheet" href="./libs/jedate/css/jedate-test.css">
     <!-- jq -->
     <script src="./libs/jquery-1.12.4.min.js"></script>
     <!-- 模板引擎 -->
     <script src="./libs/template-web.js"></script>
+    <!-- 日期插件 -->
+    <script src="./libs/jedate/js/jedate.js"></script>
+    <!-- 富文本插件 -->
+    <script src="./libs/wangEditor.min.js"></script>
+    <!-- bootstrap -->
+    <script src="./libs/bootstrap/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -42,13 +50,17 @@
                     <label for="inputCover" class="col-sm-2 control-label">文章封面：</label>
                     <div class="col-sm-10">
                         <img src="images/pic06.jpg" class="article_cover">
-                        <input name="cover" type="file" id="inputCover">
+                        <input style="display: none;" name="cover" type="file" id="inputCover">
+                        <br>
+                        <label for="inputCover">
+                            <img src="./images/uploads_icon.jpg" style="height: 50px; cursor: pointer; " alt="">
+                        </label>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputCategory" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control category" name="categoryId">
+                        <select class="form-control selCategory" name="categoryId" id="inputCategory">
                             <option>类别一</option>
                             <option>类别二</option>
                             <option>类别三</option>
@@ -58,20 +70,20 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">发布时间：</label>
+                    <label class="col-sm-2 control-label" for="testico">发布时间：</label>
                     <div class="col-sm-4">
                         <div class="jeitem">
                             <div class="jeinpbox">
                                 <input type="text" name="date" class="jeinput" id="testico" placeholder="YYYY-MM-DD">
                                 <div class="icons jebtns"
-                                    onclick="jeDate('#testico',{trigger:false,format: 'YYYY-MM-DD',theme: { bgcolor: '#00A680', pnColor: '#00DDAA' }})">
+                                    onclick="jeDate('#testico',{zIndex:20990, trigger:false,format: 'YYYY-MM-DD'})">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
+                    <label class="col-sm-2 control-label">文章内容：</label>
                     <div class="col-sm-10">
                         <!-- wangEditor -->
                         <div id="editor"></div>
@@ -80,14 +92,101 @@
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <button type="submit" class="btn btn-success btn-edit">修改</button>
-                        <button type="submit" class="btn btn-default btn-draft">存为草稿</button>
+                        <button type="submit" class="btn btn-info btn-draft">存为草稿</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
-
+    <!-- 模态框 -->
+    <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">友情提示</h4>
+                </div>
+                <div class="modal-body">
+                    <p></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">确认</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
 </body>
+<!-- 富文本配置文件script -->
+<script>
+    let E = window.wangEditor
+    let editor = new E('#editor') // 或者 var editor = new E( document.getElementById('editor') )    
+    editor.create()
+</script>
+<!-- 文章类别模板 -->
+<script id="template_category" type="text/html">
+    {{each data v}}
+    <option value="{{v.id}}">{{v.name}}</option>
+    {{/each}}
+</script>
+<script>
+    //页面传参
+    let id = window.location.href.split('=')[1];
+    console.log(id);
+    //获取所有文章类别
+    $.ajax({
+        url: 'http://localhost:8080/api/v1/admin/category/list',
+        type: 'get',
+        dataType: 'json',
+        success: function (dataBack) {
+            //  console.log(dataBack);
+            $('.selCategory').html(template('template_category', dataBack))
+        }
+    })
+    //文件预览
+    $('#inputCover').change(function () {
+        $(this).prev().attr('src', URL.createObjectURL($(this)[0].files[0]))
+    });
+    //获取当前文章信息
+    $.ajax({
+        url: 'http://localhost:8080/api/v1/admin/article/search',
+        type: 'get',
+        dataType: 'json',
+        data: {
+            id: id
+        },
+        success: function (dataBack) {
+            console.log(dataBack);
+            $('.selCategory ').val(dataBack.data.categoryId);
+            $('#inputTitle').val(dataBack.data.title);
+            $('#testico').val(dataBack.data.date);
+            $('#inputCover').prev().attr('src', dataBack.data.cover);
+            editor.txt.html(dataBack.data.content);
+        }
+    })
+    //提交文章信息
+    $('.btn-edit,.btn-draft').click(function (e) {
+        e.preventDefault();
+        let form_data = new FormData($('#form')[0]);
+        form_data.append('content', editor.txt.text());
+        form_data.append('id', id);
+        form_data.append('state', $(this).text() == '修改' ? '已发布' : '');
+        $.ajax({
+            url: 'http://localhost:8080/api/v1/admin/article/edit',
+            type: 'post',
+            dataType: 'json',
+            data: form_data,
+            contentType: false,
+            processData: false,
+            success: function (dataBack) {
+                console.log(dataBack);
+                $('.modal-body>p').text(dataBack.msg);
+                $('#myModal').modal('show');
+            }
+        })
+    })
+    
+</script>
 
 </html>
