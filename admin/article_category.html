@@ -1,7 +1,7 @@
 <!--
  * @Author: Henry
  * @Date: 2020-08-27 21:05:24
- * @LastEditTime: 2020-08-30 22:07:05
+ * @LastEditTime: 2020-08-31 16:26:34
  * @LastEditors: Henry
  * @Description: whatever
  * @FilePath: \黑马课程文件g:\git\test\learnItems\admin\article_category.html
@@ -104,6 +104,7 @@
     </script>
     <script>
         $(function () {
+            //获取所有文章类别
             $.ajax({
                 url: 'http://localhost:8080/api/v1/admin/category/list',
                 type: 'get',

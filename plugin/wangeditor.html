@@ -1,0 +1,32 @@
+<!--
+ * @Author: Henry
+ * @Date: 2020-09-01 10:07:34
+ * @LastEditTime: 2020-09-01 10:11:41
+ * @LastEditors: Henry
+ * @Description: whatever
+ * @FilePath: \黑马课程文件g:\git\test\learnItems\plugin\wangeditor.html
+ * @duang duang duang
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./js/wangEditor.min.js"></script>
+</head>
+
+<body>
+    <div id="editor">
+        <p>欢迎使用 <b>wangEditor</b> 富文本编辑器</p>
+    </div>
+</body>
+<script>
+     var E = window.wangEditor
+    // var editor = new E('#editor')
+    var editor = new E(document.getElementById('editor'))
+    editor.create()
+</script>
+
+</html>
